@@ -16,11 +16,18 @@
 <body>
     <h1>ta grosse conso</h1>
     <input type="file" id="csvFileInput" accept=".csv">
+
     <div id="progressContainer" style="width: 100%; background-color: #ddd;">
         <div id="progressBar" style="width: 0%; height: 20px; background-color: #4CAF50;"></div>
     </div>
-    <canvas id="myChart" width="600" height="400"></canvas>
+    <div style="width: 800px; height: 600px;">
+        <canvas id="myChart"></canvas>
+    </div>
 
+    <script src="./utils/progressbar.js"></script>
+    <script src="./utils/charManager.js"></script>
+    <script src="./utils/csvParser.js"></script>
     <script src="app.js"></script>
+
 </body>
 </html>
