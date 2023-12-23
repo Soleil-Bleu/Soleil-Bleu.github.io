@@ -1,32 +1,46 @@
 function getChartData(monthlyData) {
   return new Promise((resolve) => {
-      const chartDataConso = [];
-      const chartDataProd = [];
+      const dataSurplus      = [];
+      const dataConsoSolaire = [];
+      const dataConsoReseau  = [];
+      const dataConsoTotale  = [];
 
       Object.keys(monthlyData).forEach((monthYear) => {
-          const { sumConso, sumProd, count } = monthlyData[monthYear];
+          const { sumConso, sumProd, surplus, consoSolaire, consoReseau, count } = monthlyData[monthYear];
 
-          chartDataConso.push({
+          dataSurplus.push({
               x: monthYear,
-              y: sumConso / count
+              y: surplus
           });
 
-          chartDataProd.push({
+          dataConsoSolaire.push({
               x: monthYear,
-              y: sumProd / count
+              y: consoSolaire
           });
+
+          dataConsoReseau.push({
+            x: monthYear,
+            y: consoReseau
+        });
+
+        dataConsoTotale.push({
+          x: monthYear,
+          y: sumConso
+      });
       });
 
       resolve({
-          conso: chartDataConso,
-          prod: chartDataProd
+          surplus: dataSurplus,
+          consoSolaire: dataConsoSolaire,
+          consoReseau: dataConsoReseau,
+          conso: dataConsoTotale,
       });
   });
 }
 
 
 
-function drawChart(chartConso, chartProd) {
+function drawChart(chartData) {
     const ctx = document.getElementById("myChart").getContext("2d");
   
     // Check if a chart instance already exists
@@ -40,40 +54,79 @@ function drawChart(chartConso, chartProd) {
       data: {
         datasets: [
           {
-            label: "ta grosse conso chakal",
-            data: chartConso,
-            backgroundColor: "rgba(0, 123, 255, 0.5)",
-            borderColor: "rgba(0, 123, 255, 1)",
+            label: "ta conso totale",
+            data: chartData.conso,
+            backgroundColor: "rgba(50, 50, 0, 0.1)",
+            borderColor:     "rgba(50, 50, 0, 1)",
             borderWidth: 1,
+            xAxisID: "x2",
+            order: 1,
           },{
-            label: "ton énorme production bg",
-            data: chartProd,
-            backgroundColor: "rgba(200, 123, 50, 0.5)",
-            borderColor: "rgba(200, 123, 50, 1)",
+            label: "ta conso réseau",
+            data: chartData.consoReseau,
+            backgroundColor: "rgba(100, 203, 50, 0.5)",
+            borderColor:     "rgba(100, 203, 50, 1)",
             borderWidth: 1,
+            stack: 'Stack 0',
+            xAxisID: "x1",
+            order:2,
+          },{
+            label: "ta conso solaire",
+            data: chartData.consoSolaire,
+            backgroundColor: "rgba(200, 123, 50, 0.5)",
+            borderColor:     "rgba(200, 123, 50, 1)",
+            borderWidth: 1,
+            stack: 'Stack 0',
+            xAxisID: "x1",
+            order: 2,
+          },{
+            label: "ton surplus",
+            data: chartData.surplus,
+            backgroundColor: "rgba(0, 123, 255, 0.5)",
+            borderColor:     "rgba(0, 123, 255, 1)",
+            borderWidth: 1,
+            stack: 'Stack 0',
+            xAxisID: "x1",
+            order: 2,
           }
         ],
       },
       options: {
         scales: {
-          x: {
-            type: "time",
+          x1: {
             stacked: true,
+            display: true, // Set this to true to display this axis
+            type: 'time',
             time: {
-              parser: "yyyy-MM", // Changed to month-year format
-              unit: "month",
+              unit: 'month',
               displayFormats: {
-                month: "MMM",
-              },
+                month: 'MMM'
+              }
             },
+            grid: {
+              display: false
+            },
+            offset: true,
+          },
+          x2: {
+            display: false,
+            type: 'time',
+            offset: true,
+            ticks: {
+              display: false,
+            }
           },
           y: {
-            beginAtZero: true,
             stacked: true,
+            ticks: {
+              beginAtZero: true,
+            }
           },
         },
         responsive: true,
         maintainAspectRatio: true,
-      },
+      }
     });
+  return window.myChartInstance;
   }
+

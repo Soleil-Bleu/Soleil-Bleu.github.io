@@ -18,7 +18,7 @@ document
       // console.log(monthlyData);
       const chartData = await getChartData(monthlyData);
       // console.log(chartData);
-      drawChart(chartData.conso, chartData.prod);
+      const chart = drawChart(chartData);
       hideProgressBar();
     };
     reader.readAsText(event.target.files[0]);
